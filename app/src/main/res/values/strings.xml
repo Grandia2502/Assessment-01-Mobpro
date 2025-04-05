@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Assessment 01</string>
+    <string name="judul_aplikasi">Konversi Unit Suhu</string>
+    <string name="keterangan_label_suhu">Masukkan nilai suhu</string>
 </resources>

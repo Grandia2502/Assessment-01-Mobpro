@@ -3,6 +3,7 @@ package com.grandiamuhammad3096.assessment01.ui.screen
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,12 +12,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -65,12 +70,15 @@ fun MainScreen() {
 fun KonversiSuhu(modifier: Modifier = Modifier) {
     var inputNilaiSuhu by rememberSaveable { mutableStateOf("") }
     var selectedUnit by rememberSaveable { mutableStateOf("Celsius") }
+    var hasilKonversi by rememberSaveable { mutableStateOf<Map<String, String>>(emptyMap()) }
+    var tampilkanHasil by rememberSaveable { mutableStateOf(false) }
+    var inputError by rememberSaveable { mutableStateOf(false) }
+
     val units = listOf("Celsius", "Fahrenheit", "Kelvin", "Reamur")
 
-    val hasilKonversi = konversiSuhu(inputNilaiSuhu, selectedUnit)
-
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -86,8 +94,15 @@ fun KonversiSuhu(modifier: Modifier = Modifier) {
 
         OutlinedTextField(
             value = inputNilaiSuhu,
-            onValueChange = { inputNilaiSuhu = it },
+            onValueChange = {
+                inputNilaiSuhu = it
+                inputError = false
+                tampilkanHasil = false
+            },
             label = { Text(text = stringResource(R.string.keterangan_label_suhu)) },
+            trailingIcon = { IconPicker(isError = inputError) },
+            supportingText = { ErrorHint(isError = inputError) },
+            isError = inputError,
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
@@ -100,26 +115,51 @@ fun KonversiSuhu(modifier: Modifier = Modifier) {
         PilihanSatuanSuhu(
             options = units,
             selected = selectedUnit,
-            onOptionSelected = { selectedUnit = it },
+            onOptionSelected = {
+                selectedUnit = it
+                tampilkanHasil = false
+            },
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = {
+                val suhu = inputNilaiSuhu.toDoubleOrNull()
+                if (suhu == null) {
+                    inputError = true
+                    tampilkanHasil = false
+                } else {
+                    hasilKonversi = konversiSuhu(inputNilaiSuhu, selectedUnit)
+                    tampilkanHasil = true
+                    inputError = false
+                }
+            },
+            contentPadding = PaddingValues(horizontal = 32.dp, vertical = 16.dp)
+        ) {
+            Text(text = stringResource(R.string.konversi))
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         // Hasil Konversi
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                horizontalAlignment = Alignment.Start
+        if (tampilkanHasil) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
             ) {
-                Text(text = stringResource(R.string.hasil_konversi),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp)
-                hasilKonversi.forEach { (satuan, nilai) ->
-                    Text("$satuan: $nilai", fontSize = 16.sp)
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(
+                        text = stringResource(R.string.hasil_konversi),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
+                    hasilKonversi.forEach { (satuan, nilai) ->
+                        Text("$satuan: $nilai", fontSize = 16.sp)
+                    }
                 }
             }
         }
@@ -171,6 +211,20 @@ fun PilihanSatuanSuhu(
     }
 }
 
+@Composable
+fun IconPicker(isError: Boolean) {
+    if (isError) {
+        Icon(imageVector = Icons.Filled.Warning, contentDescription = null)
+    }
+}
+
+@Composable
+fun ErrorHint(isError: Boolean) {
+    if (isError) {
+        Text(text = stringResource(R.string.input_invalid))
+    }
+}
+
 fun konversiSuhu(input: String, fromUnit: String): Map<String, String> {
     val suhu = input.toDoubleOrNull() ?: return emptyMap()
     val celsius = when (fromUnit) {
@@ -182,10 +236,10 @@ fun konversiSuhu(input: String, fromUnit: String): Map<String, String> {
     }
 
     return mapOf(
-        "Celsius" to "%.2f".format(celsius),
-        "Fahrenheit" to "%.2f".format(celsius * 9 / 5 + 32),
-        "Kelvin" to "%.2f".format(celsius + 273.15),
-        "Reamur" to "%.2f".format(celsius * 4 / 5)
+        "Celsius" to "%.2f".format(celsius) + " \u00B0C",
+        "Fahrenheit" to "%.2f".format(celsius * 9 / 5 + 32) + " \u00B0F",
+        "Kelvin" to "%.2f".format(celsius + 273.15) + " K",
+        "Reamur" to "%.2f".format(celsius * 4 / 5) + " \u00B0Re"
     )
 }
 

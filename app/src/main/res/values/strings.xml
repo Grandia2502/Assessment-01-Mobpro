@@ -6,4 +6,11 @@
     <string name="hasil_konversi">Hasil Konversi:</string>
     <string name="input_invalid">Tidak boleh kosong!</string>
     <string name="konversi">Konversi</string>
+    <string name="tentang_aplikasi">Tentang Aplikasi</string>
+    <string name="copyright">Aplikasi ini memungkinkan pengguna untuk mengonversi antara berbagai
+        satuan suhu seperti Celsius (°C), Fahrenheit (°F), Kelvin (K), dan Reamur (°Re).
+        Aplikasi ini berguna untuk siapa saja yang bekerja dengan suhu.\n\nAplikasi ini
+        dibuat untuk memenuhi tugas Assessment 01 mata kuliah Perangkat Bergerak 1.\n\nCopyright ©
+        2024-2025 Grandia Muhammad.\nAll rights reserved</string>
+    <string name="kembali">Kembali</string>
 </resources>

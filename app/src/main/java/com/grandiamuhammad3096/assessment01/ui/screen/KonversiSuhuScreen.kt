@@ -88,11 +88,10 @@ fun KonversiSuhuScreen(navController: NavHostController) {
 @Composable
 fun KonversiSuhu(modifier: Modifier = Modifier) {
     var inputNilaiSuhu by rememberSaveable { mutableStateOf("") }
-    var selectedUnit by rememberSaveable { mutableStateOf("") }
+    var selectedUnit by rememberSaveable { mutableStateOf("Celsius") }
     var hasilKonversi by rememberSaveable { mutableStateOf<Map<String, String>>(emptyMap()) }
     var tampilkanHasil by rememberSaveable { mutableStateOf(false) }
     var inputError by rememberSaveable { mutableStateOf(false) }
-    var unitError by rememberSaveable { mutableStateOf(false) }
 
     val units = listOf("Celsius", "Fahrenheit", "Kelvin", "Reamur")
 
@@ -139,7 +138,6 @@ fun KonversiSuhu(modifier: Modifier = Modifier) {
             selected = selectedUnit,
             onOptionSelected = {
                 selectedUnit = it
-                unitError = false
                 tampilkanHasil = false
             },
             modifier = Modifier.padding(bottom = 16.dp)
@@ -147,8 +145,7 @@ fun KonversiSuhu(modifier: Modifier = Modifier) {
         Button(
             onClick = {
                 val suhu = inputNilaiSuhu.toDoubleOrNull()
-                if (suhu == null) {
-                    inputNilaiSuhu = ""
+                if (suhu == null || selectedUnit.isBlank() || selectedUnit !in units) {
                     inputError = true
                     tampilkanHasil = false
                 } else {
@@ -233,6 +230,8 @@ fun PilihanSatuanSuhu(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
+    val isUnitError = selected.isBlank()
+
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded },
@@ -243,6 +242,7 @@ fun PilihanSatuanSuhu(
             onValueChange = {},
             readOnly = true,
             label = { Text(text = stringResource(R.string.pilih_satuan_suhu)) },
+            isError = isUnitError,
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },
@@ -250,7 +250,6 @@ fun PilihanSatuanSuhu(
                 .menuAnchor()
                 .fillMaxWidth()
         )
-
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }

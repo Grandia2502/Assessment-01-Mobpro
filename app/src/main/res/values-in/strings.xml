@@ -5,8 +5,9 @@
     <string name="keterangan_label_suhu">Masukkan nilai suhu</string>
     <string name="pilih_satuan_suhu">Pilih satuan suhu</string>
     <string name="hasil_konversi">Hasil Konversi</string>
-    <string name="input_invalid_value">Tidak boleh kosong!</string>
     <string name="konversi">Konversi</string>
+    <string name="input_invalid_value">Tidak boleh kosong!</string>
+    <string name="pesan_error_unit">Pilih satuan suhu terlebih dahulu</string>
 
     <string name="kembali">Kembali</string>
     <string name="tentang_aplikasi">Tentang Aplikasi</string>

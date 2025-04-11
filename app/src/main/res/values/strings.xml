@@ -6,6 +6,7 @@
     <string name="hasil_konversi">Conversion Results:</string>
     <string name="konversi">Convert</string>
     <string name="input_invalid_value">Can\'t be empty!</string>
+    <string name="pesan_error_unit">Select the temperature unit first!</string>
 
     <string name="kembali">Back</string>
     <string name="tentang_aplikasi">About the App</string>

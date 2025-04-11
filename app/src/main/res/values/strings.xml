@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">Assessment 01</string>
     <string name="judul_aplikasi">Temperature Unit Conversion</string>
-    <string name="keterangan_label_suhu">Enter the temperature valuesuhu</string>
+    <string name="keterangan_label_suhu">Enter the temperature value</string>
     <string name="pilih_satuan_suhu">Select temperature units</string>
     <string name="hasil_konversi">Conversion Results:</string>
     <string name="konversi">Convert</string>
-    <string name="input_invalid">Can\'t be empty!</string>
+    <string name="input_invalid_value">Can\'t be empty!</string>
 
     <string name="kembali">Back</string>
     <string name="tentang_aplikasi">About the App</string>
@@ -13,4 +13,8 @@
         Fahrenheit (°F), Kelvin (K), and Reamur (°Re). This app is useful for anyone who works with temperature.
         \n\nThis application made to fulfill the Assessment 01 assignment of the Mobile Devices 1 course.
         \n\nCopyright © 2024–2025 Grandia Muhammad.\nAll rights reserved</string>
+
+    <string name="bagikan">Share</string>
+    <string name="hasil_konversi_format">Conversion from %1$s\u00B0 %2$s:\n\n</string>
+    <string name="baris_konversi_format">- %1$s: %2$s</string>
 </resources>

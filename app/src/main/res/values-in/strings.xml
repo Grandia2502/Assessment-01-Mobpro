@@ -5,7 +5,7 @@
     <string name="keterangan_label_suhu">Masukkan nilai suhu</string>
     <string name="pilih_satuan_suhu">Pilih satuan suhu</string>
     <string name="hasil_konversi">Hasil Konversi</string>
-    <string name="input_invalid">Tidak boleh kosong!</string>
+    <string name="input_invalid_value">Tidak boleh kosong!</string>
     <string name="konversi">Konversi</string>
 
     <string name="kembali">Kembali</string>
@@ -15,4 +15,8 @@
         Aplikasi ini berguna untuk siapa saja yang bekerja dengan suhu.
         \n\nAplikasi ini dibuat untuk memenuhi tugas Assessment 01 mata kuliah Perangkat Bergerak 1.
         \n\nCopyright © 2024-2025 Grandia Muhammad. \nAll rights reserved</string>
+
+    <string name="bagikan">Bagikan</string>
+    <string name="hasil_konversi_format">Konversi dari %1$s\u00b0 %2$s:\n\n</string>
+    <string name="baris_konversi_format">- %1$s: %2$s</string>
 </resources>

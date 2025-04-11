@@ -1,13 +1,13 @@
 package com.grandiamuhammad3096.assessment01.ui.screen
 
+import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,6 +22,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +39,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -85,12 +88,17 @@ fun KonversiSuhuScreen(navController: NavHostController) {
 @Composable
 fun KonversiSuhu(modifier: Modifier = Modifier) {
     var inputNilaiSuhu by rememberSaveable { mutableStateOf("") }
-    var selectedUnit by rememberSaveable { mutableStateOf("Celsius") }
+    var selectedUnit by rememberSaveable { mutableStateOf("") }
     var hasilKonversi by rememberSaveable { mutableStateOf<Map<String, String>>(emptyMap()) }
     var tampilkanHasil by rememberSaveable { mutableStateOf(false) }
     var inputError by rememberSaveable { mutableStateOf(false) }
+    var unitError by rememberSaveable { mutableStateOf(false) }
 
     val units = listOf("Celsius", "Fahrenheit", "Kelvin", "Reamur")
+
+    val context = LocalContext.current
+
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(
         modifier = modifier
@@ -107,7 +115,6 @@ fun KonversiSuhu(modifier: Modifier = Modifier) {
             fontWeight = FontWeight.Bold,
             modifier = Modifier.fillMaxWidth()
         )
-
         OutlinedTextField(
             value = inputNilaiSuhu,
             onValueChange = {
@@ -117,7 +124,7 @@ fun KonversiSuhu(modifier: Modifier = Modifier) {
             },
             label = { Text(text = stringResource(R.string.keterangan_label_suhu)) },
             trailingIcon = { IconPicker(isError = inputError) },
-            supportingText = { ErrorHint(isError = inputError) },
+            supportingText = { ErrorHintValue(isError = inputError) },
             isError = inputError,
             singleLine = true,
             keyboardOptions = KeyboardOptions(
@@ -126,18 +133,17 @@ fun KonversiSuhu(modifier: Modifier = Modifier) {
             ),
             modifier = Modifier.fillMaxWidth()
         )
-
 //      Dropdown pilihan satuan suhu
         PilihanSatuanSuhu(
             options = units,
             selected = selectedUnit,
             onOptionSelected = {
                 selectedUnit = it
+                unitError = false
                 tampilkanHasil = false
             },
             modifier = Modifier.padding(bottom = 16.dp)
         )
-
         Button(
             onClick = {
                 val suhu = inputNilaiSuhu.toDoubleOrNull()
@@ -150,17 +156,19 @@ fun KonversiSuhu(modifier: Modifier = Modifier) {
                     tampilkanHasil = true
                     inputError = false
                 }
+                keyboardController?.hide()
             },
             contentPadding = PaddingValues(horizontal = 32.dp, vertical = 16.dp)
         ) {
             Text(text = stringResource(R.string.konversi))
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
         // Hasil Konversi
         if (tampilkanHasil) {
-            Spacer(modifier = Modifier.height(16.dp))
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = 16.dp),
+                thickness = 1.dp
+            )
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
@@ -174,10 +182,42 @@ fun KonversiSuhu(modifier: Modifier = Modifier) {
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp
                     )
-                    hasilKonversi.forEach { (satuan, nilai) ->
+                    hasilKonversi
+                        .filter { it.key != selectedUnit }
+                        .forEach { (satuan, nilai) ->
                         Text("$satuan: $nilai", fontSize = 16.sp)
                     }
                 }
+            }
+            Button(
+                onClick = {
+                    val hasilText = buildString {
+                        append(
+                            context.getString(
+                                R.string.hasil_konversi_format,
+                                inputNilaiSuhu,
+                                selectedUnit
+                            )
+                        )
+                        hasilKonversi
+                            .filter { it.key != selectedUnit }
+                            .forEach { (satuan, nilai) ->
+                            append(
+                                context.getString(
+                                    R.string.baris_konversi_format,
+                                    satuan,
+                                    nilai
+                                )
+                            )
+                            append("\n")
+                        }
+                    }
+                    shareData(context, hasilText)
+                },
+                modifier = Modifier.padding(top = 16.dp),
+                contentPadding = PaddingValues(horizontal = 32.dp, vertical = 16.dp)
+            ) {
+                Text(text = stringResource(R.string.bagikan))
             }
         }
     }
@@ -236,13 +276,13 @@ fun IconPicker(isError: Boolean) {
 }
 
 @Composable
-fun ErrorHint(isError: Boolean) {
+fun ErrorHintValue(isError: Boolean) {
     if (isError) {
-        Text(text = stringResource(R.string.input_invalid))
+        Text(text = stringResource(R.string.input_invalid_value))
     }
 }
 
-fun konversiSuhu(input: String, fromUnit: String): Map<String, String> {
+private fun konversiSuhu(input: String, fromUnit: String): Map<String, String> {
     val suhu = input.toDoubleOrNull() ?: return emptyMap()
     val celsius = when (fromUnit) {
         "Celsius" -> suhu
@@ -258,6 +298,16 @@ fun konversiSuhu(input: String, fromUnit: String): Map<String, String> {
         "Kelvin" to "%.2f".format(celsius + 273.15) + " K",
         "Reamur" to "%.2f".format(celsius * 4 / 5) + " \u00B0Re"
     )
+}
+
+private fun shareData(context: Context, message: String) {
+    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT,message)
+    }
+    if (shareIntent.resolveActivity(context.packageManager) != null) {
+        context.startActivity(shareIntent)
+    }
 }
 
 @Preview(uiMode = Configuration.UI_MODE_TYPE_NORMAL, showBackground = true)

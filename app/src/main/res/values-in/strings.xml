@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Assessment 01</string>
-    <string name="judul_aplikasi">Konversi Unit Suhu</string>
+    <string name="app_name">Konversi Unit Suhu</string>
+    <string name="tugas_aplikasi">Assessment 01</string>
     <string name="keterangan_label_suhu">Masukkan nilai suhu</string>
     <string name="pilih_satuan_suhu">Pilih satuan suhu</string>
     <string name="hasil_konversi">Hasil Konversi</string>
@@ -19,4 +19,6 @@
     <string name="bagikan">Bagikan</string>
     <string name="hasil_konversi_format">Konversi dari %1$s\u00b0 %2$s:\n\n</string>
     <string name="baris_konversi_format">- %1$s: %2$s</string>
+
+    <string name="logo_aplikasi">Logo Aplikasi</string>
 </resources>

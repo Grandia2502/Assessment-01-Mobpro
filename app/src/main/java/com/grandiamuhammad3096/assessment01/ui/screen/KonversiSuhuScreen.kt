@@ -61,7 +61,7 @@ fun KonversiSuhuScreen(navController: NavHostController) {
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = stringResource(id = R.string.app_name))
+                    Text(text = stringResource(id = R.string.tugas_aplikasi))
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -109,7 +109,7 @@ fun KonversiSuhu(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = stringResource(id = R.string.judul_aplikasi),
+            text = stringResource(id = R.string.app_name),
             style = MaterialTheme.typography.bodyLarge,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
@@ -215,7 +215,7 @@ fun KonversiSuhu(modifier: Modifier = Modifier) {
                     shareData(context, hasilText)
                 },
                 modifier = Modifier.padding(top = 16.dp),
-                contentPadding = PaddingValues(horizontal = 32.dp, vertical = 16.dp)
+                contentPadding = PaddingValues(horizontal = 36.dp, vertical = 16.dp)
             ) {
                 Text(text = stringResource(R.string.bagikan))
             }

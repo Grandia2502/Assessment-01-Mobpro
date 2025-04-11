@@ -2,4 +2,6 @@
     <string name="app_name">Assessment 01</string>
     <string name="judul_aplikasi">Konversi Unit Suhu</string>
     <string name="keterangan_label_suhu">Masukkan nilai suhu</string>
+    <string name="pilih_satuan_suhu">Pilih satuan suhu</string>
+    <string name="hasil_konversi">Hasil Konversi:</string>
 </resources>
